@@ -3,12 +3,20 @@ SHELL := /bin/bash
 help:
 	@$(MAKE) -pRrq -f $(lastword $(MAKEFILE_LIST)) : 2>/dev/null | awk -v RS= -F: '/^# File/,/^# Finished Make data base/ {if ($$1 !~ "^[#.]") {print $$1}}' | sort | egrep -v -e '^[^[:alnum:]]' -e '^$@$$'
 
-install:
+venv:
 	./tools/create_venv.sh
 
-activate:
-	source ./.venv/bin/activate
-
+lint:
+	@echo "*********** YAMLLINT"
+	@yamllint -c=.yamllint.yml . || true
+	@echo "*********** BLACK"
+	@black . || true
+	@echo "*********** FLAKE8"
+	@flake8 . || true
+	@echo "*********** MYPY"
+	@mypy . || true
+# flake8
+# yamllint
 #run:
 #	python manage.py runserver
 #

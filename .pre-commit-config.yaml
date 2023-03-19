@@ -1,0 +1,27 @@
+---
+repos:
+  - repo: local
+    hooks:
+      - id: yamllint
+        name: yamllint
+        entry: |
+          yamllint -c=.yamllint.yml .
+        language: system
+        types: [yaml]
+        pass_filenames: false
+
+      - id: black
+        name: black
+        entry: |
+          black .
+        language: system
+        types: [python]
+        pass_filenames: false
+
+      - id: mypy
+        name: mypy
+        entry: |
+          mypy .
+        language: system
+        types: [python]
+        pass_filenames: false
