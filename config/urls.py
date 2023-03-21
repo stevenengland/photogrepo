@@ -13,14 +13,11 @@ from django.urls import include, path
 from django.views.generic import TemplateView
 from health_check import urls as health_urls
 
-from app.main import urls as main_urls
-from app.main.views import index
-
 admin.autodiscover()
 
 urlpatterns = [
     # Apps:
-    path('main/', include(main_urls, namespace='main')),
+    # path('main/', include(main_urls, namespace='main')),
 
     # Health checks:
     path('health/', include(health_urls)),
@@ -34,13 +31,9 @@ urlpatterns = [
         template_name='txt/robots.txt',
         content_type='text/plain',
     )),
-    path('humans.txt', TemplateView.as_view(
-        template_name='txt/humans.txt',
-        content_type='text/plain',
-    )),
 
     # It is a good practice to have explicit index view:
-    path('', index, name='index'),
+    # path('', index, name='index'),
 ]
 
 if settings.DEBUG:  # pragma: no cover
