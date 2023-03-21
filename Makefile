@@ -15,8 +15,10 @@ lint:
 	@flake8 . || true
 	@echo "*********** MYPY"
 	@mypy . || true
-# flake8
-# yamllint
+
+test:
+	@DJANGO_ENV=test pytest
+
 #run:
 #	python manage.py runserver
 #

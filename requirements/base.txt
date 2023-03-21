@@ -1,2 +1,13 @@
 -c constraints.txt
 django
+django-axes
+django-csp
+django-health-check
+django_http_referrer_policy
+django_permissions_policy
+django-split-settings
+django-stubs
+djangorestframework-stubs[compatible-mypy]
+python-decouple
+psycopg2-binary
+structlog

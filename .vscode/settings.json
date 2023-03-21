@@ -1,3 +1,13 @@
 {
-    "files.trimTrailingWhitespace": true
+      "files.exclude": {
+        "**/.mypy_cache": true,
+        "**/.pytest_cache": true,
+        "**/__pycache__": true
+    },
+    "files.trimTrailingWhitespace": true,
+    "python.formatting.provider": "black",
+    "python.linting.enabled": true,
+    "python.linting.lintOnSave": true,
+    "python.linting.flake8Enabled": true,
+    "python.linting.mypyEnabled": true,
 }

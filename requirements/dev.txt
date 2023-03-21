@@ -1,4 +1,15 @@
 -r ./base.txt
 black
+django_coverage_plugin
+django-debug-toolbar
+django-extra-checks
+django_migration_linter
+django-querycount
+django_test_migrations
 mypy
+nplusone
+pytest
+pytest-cov
+pytest-django
+pytest-timeout
 wemake-python-styleguide
