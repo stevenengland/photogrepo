@@ -2,7 +2,7 @@ from typing import Optional
 
 from django.db import transaction
 
-from app.common.services import model_update
+from app.common.services.model_update_service import model_update
 from app.users.models import BaseUser
 
 

@@ -3,8 +3,8 @@ from typing import Any, Dict, List, Tuple
 from django.db import models
 from django.utils import timezone
 
+from app.common.exceptions import ApplicationError
 from app.common.types import DjangoModelType
-from app.core.exceptions import ApplicationError
 
 
 def model_update(  # type: ignore[misc] # noqa: C901,WPS210,WPS231
