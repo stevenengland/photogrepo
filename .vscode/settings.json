@@ -1,13 +1,28 @@
 {
-      "files.exclude": {
+
+    "files.exclude": {
         "**/.mypy_cache": true,
         "**/.pytest_cache": true,
         "**/__pycache__": true
     },
+    "[python]": {
+    "editor.defaultFormatter": "ms-python.black-formatter",
+    "editor.formatOnSave": true,
+    "editor.codeActionsOnSave": {
+        "source.organizeImports": true
+      },
+    },
     "files.trimTrailingWhitespace": true,
-    "python.formatting.provider": "black",
+    "python.formatting.provider": "none",
     "python.linting.enabled": true,
     "python.linting.lintOnSave": true,
     "python.linting.flake8Enabled": true,
+    "python.linting.flake8Path": ".venv/bin/flake8",
     "python.linting.mypyEnabled": true,
+    "python.linting.mypyPath": ".venv/bin/mypy",
+    "isort.path": [
+      ".venv/bin/isort"
+    ],
+    "isort.importStrategy": "fromEnvironment",
+    "python.formatting.blackPath": ".venv/bin/black",
 }

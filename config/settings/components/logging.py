@@ -1,9 +1,12 @@
-# Logging
-# https://docs.djangoproject.com/en/3.2/topics/logging/
+"""
+Add Logging capability.
 
-# See also:
-# 'Do not log' by Nikita Sobolev (@sobolevn)
-# https://sobolevn.me/2020/03/do-not-log
+More information here:
+https://docs.djangoproject.com/en/3.2/topics/logging/
+See also:
+'Do not log' by Nikita Sobolev (@sobolevn)
+https://sobolevn.me/2020/03/do-not-log
+"""
 
 from typing import TYPE_CHECKING, Callable, final
 
@@ -13,51 +16,48 @@ if TYPE_CHECKING:
     from django.http import HttpRequest, HttpResponse
 
 LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-
+    "version": 1,
+    "disable_existing_loggers": False,
     # We use these formatters in our `'handlers'` configuration.
     # Probably, you won't need to modify these lines.
     # Unless, you know what you are doing.
-    'formatters': {
-        'json_formatter': {
-            '()': structlog.stdlib.ProcessorFormatter,
-            'processor': structlog.processors.JSONRenderer(),
+    "formatters": {
+        "json_formatter": {
+            "()": structlog.stdlib.ProcessorFormatter,
+            "processor": structlog.processors.JSONRenderer(),
         },
-        'console': {
-            '()': structlog.stdlib.ProcessorFormatter,
-            'processor': structlog.processors.KeyValueRenderer(
-                key_order=['timestamp', 'level', 'event', 'logger'],
+        "console": {
+            "()": structlog.stdlib.ProcessorFormatter,
+            "processor": structlog.processors.KeyValueRenderer(
+                key_order=["timestamp", "level", "event", "logger"],
             ),
         },
     },
-
     # You can easily swap `key/value` (default) output and `json` ones.
     # Use `'json_console'` if you need `json` logs.
-    'handlers': {
-        'console': {
-            'class': 'logging.StreamHandler',
-            'formatter': 'console',
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
+            "formatter": "console",
         },
-        'json_console': {
-            'class': 'logging.StreamHandler',
-            'formatter': 'json_formatter',
+        "json_console": {
+            "class": "logging.StreamHandler",
+            "formatter": "json_formatter",
         },
     },
-
     # These loggers are required by our app:
     # - django is required when using `logger.getLogger('django')`
     # - security is required by `axes`
-    'loggers': {
-        'django': {
-            'handlers': ['console'],
-            'propagate': True,
-            'level': 'INFO',
+    "loggers": {
+        "django": {
+            "handlers": ["console"],
+            "propagate": True,
+            "level": "INFO",
         },
-        'security': {
-            'handlers': ['console'],
-            'level': 'ERROR',
-            'propagate': False,
+        "security": {
+            "handlers": ["console"],
+            "level": "ERROR",
+            "propagate": False,
         },
     },
 }
@@ -69,14 +69,15 @@ class LoggingContextVarsMiddleware(object):
 
     def __init__(
         self,
-        get_response: 'Callable[[HttpRequest], HttpResponse]',
+        get_response: "Callable[[HttpRequest], HttpResponse]",
     ) -> None:
         """Django's API-compatible constructor."""
         self.get_response = get_response
 
-    def __call__(self, request: 'HttpRequest') -> 'HttpResponse':
+    def __call__(self, request: "HttpRequest") -> "HttpResponse":
         """
         Handle requests.
+
         Add your logging metadata here.
         Example: https://github.com/jrobichaud/django-structlog
         """
@@ -90,7 +91,7 @@ if not structlog.is_configured():
         processors=[
             structlog.contextvars.merge_contextvars,
             structlog.stdlib.filter_by_level,
-            structlog.processors.TimeStamper(fmt='iso'),
+            structlog.processors.TimeStamper(fmt="iso"),
             structlog.stdlib.add_logger_name,
             structlog.stdlib.add_log_level,
             structlog.stdlib.PositionalArgumentsFormatter(),

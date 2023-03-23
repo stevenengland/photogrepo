@@ -1,5 +1,6 @@
 """
 This is a django-split-settings main file.
+
 For more information read this:
 https://github.com/sobolevn/django-split-settings
 https://sobolevn.me/2017/04/managing-djangos-settings
@@ -17,20 +18,18 @@ from split_settings.tools import include, optional
 django_stubs_ext.monkeypatch()
 
 # Managing environment via `DJANGO_ENV` variable:
-environ.setdefault('DJANGO_ENV', 'development')
-_ENV = environ['DJANGO_ENV']
+environ.setdefault("DJANGO_ENV", "development")
+_ENV = environ["DJANGO_ENV"]
 
 _base_settings = (
-    'components/common.py',
-    'components/logging.py',
-    'components/csp.py',
-    'components/caches.py',
-
+    "components/common.py",
+    "components/logging.py",
+    "components/csp.py",
+    "components/caches.py",
     # Select the right env:
-    'environments/{0}.py'.format(_ENV),
-
+    "environments/{0}.py".format(_ENV),
     # Optionally override some settings:
-    optional('environments/local.py'),
+    optional("environments/local.py"),
 )
 
 # Include settings:
