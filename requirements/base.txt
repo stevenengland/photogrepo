@@ -11,3 +11,4 @@ djangorestframework-stubs[compatible-mypy]
 python-decouple
 psycopg2-binary
 structlog
+types-mock

@@ -11,5 +11,6 @@ nplusone
 pytest
 pytest-cov
 pytest-django
+pytest-mock
 pytest-timeout
 wemake-python-styleguide

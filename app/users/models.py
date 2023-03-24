@@ -49,7 +49,7 @@ class BaseUserManager(Bum):  # type: ignore[type-arg]
         return user
 
 
-class BaseUser(BaseModel, AbstractBaseUser, PermissionsMixin):  # type: ignore[misc]
+class BaseUser(BaseModel, AbstractBaseUser, PermissionsMixin):
     """The base user."""
 
     email = models.EmailField(
