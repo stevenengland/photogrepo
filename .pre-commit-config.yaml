@@ -5,7 +5,7 @@ repos:
       - id: yamllint
         name: yamllint
         entry: |
-          yamllint -c=.yamllint.yml .
+          .venv/bin/yamllint -c=.yamllint.yml .
         language: system
         types: [yaml]
         pass_filenames: false
@@ -13,7 +13,7 @@ repos:
       - id: black
         name: black
         entry: |
-          black .
+          .venv/bin/black .
         language: system
         types: [python]
         pass_filenames: false
@@ -21,7 +21,7 @@ repos:
       - id: mypy
         name: mypy
         entry: |
-          mypy .
+          .venv/bin/mypy .
         language: system
         types: [python]
         pass_filenames: false
