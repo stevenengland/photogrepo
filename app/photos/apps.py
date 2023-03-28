@@ -1,7 +1,7 @@
 from django.apps import AppConfig
 
 
-class CommonConfig(AppConfig):
+class PhotosConfig(AppConfig):
     """The config."""
 
     default_auto_field = "django.db.models.BigAutoField"

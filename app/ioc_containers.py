@@ -1,13 +1,13 @@
 from dependency_injector import containers, providers
 
-from app.common.services.file_system_service import FileSystemService
+# from app.common.services.file_system_service import FileSystemService
 from app.photos.services.photo_consumer_service import PhotoConsumerService2
 
 
 class Container(containers.DeclarativeContainer):
     wiring_config = containers.WiringConfiguration(
         packages=[
-            "app.common",
+            # "app.common",
             "app.photos",
         ],
     )
@@ -16,5 +16,6 @@ class Container(containers.DeclarativeContainer):
 
     photo_consumer_service = providers.Factory(
         PhotoConsumerService2,
-        file_system_service=FileSystemService,
+        name="sten"
+        # file_system_service=FileSystemService,
     )
