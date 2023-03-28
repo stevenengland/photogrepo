@@ -1,5 +1,6 @@
 -c constraints.txt
 appdirs
+dependency-injector
 django
 django-axes
 django-csp
