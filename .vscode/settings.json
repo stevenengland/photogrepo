@@ -25,4 +25,7 @@
     ],
     "isort.importStrategy": "fromEnvironment",
     "python.formatting.blackPath": ".venv/bin/black",
+    "python.testing.pytestArgs": [],
+    "python.testing.unittestEnabled": false,
+    "python.testing.pytestEnabled": true,
 }

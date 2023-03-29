@@ -23,6 +23,7 @@ SECRET_KEY = config("DJANGO_SECRET_KEY")
 INSTALLED_APPS: Tuple[str, ...] = (
     # Your apps go here:
     "app.common",
+    "app.photos",
     "app.users",
     # Default django apps:
     "django.contrib.auth",
