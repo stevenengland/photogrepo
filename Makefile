@@ -19,6 +19,12 @@ lint:
 test:
 	@DJANGO_ENV=test pytest
 
+pyclean:
+	@find . \
+    | grep -E '(__pycache__|\.hypothesis|\.perm|\.cache|\.static|\.py[cod]$)' \
+    | xargs rm -rf \
+  || true
+
 #run:
 #	python manage.py runserver
 #

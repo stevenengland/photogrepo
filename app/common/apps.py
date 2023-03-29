@@ -11,9 +11,8 @@ class CommonConfig(AppConfig):
 
     def ready(self) -> None:
         container.wire(
-            modules=["app.photos.services.photo_consumer_service"],
             packages=[
-                # "app.common",
-                #    "app.photos",
+                "app.common",
+                "app.photos",
             ],
         )
