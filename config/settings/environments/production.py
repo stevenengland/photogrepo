@@ -6,6 +6,7 @@ values are overridden.
 """
 
 from config.settings.components import config
+from config.settings.components.photogrepo import HOSTING_DOMAIN_NAME
 
 # Production flags:
 # https://docs.djangoproject.com/en/3.2/howto/deployment/
@@ -14,7 +15,7 @@ DEBUG = False
 
 ALLOWED_HOSTS = [
     # TODO: check production hosts
-    config("DOMAIN_NAME"),
+    HOSTING_DOMAIN_NAME,
     # We need this value for `healthcheck` to work:
     "localhost",
 ]

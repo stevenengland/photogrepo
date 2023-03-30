@@ -22,11 +22,11 @@ environ.setdefault("DJANGO_ENV", "development")
 _ENV = environ["DJANGO_ENV"]
 
 _base_settings = (
+    "components/photogrepo.py",
     "components/common.py",
     "components/logging.py",
     "components/csp.py",
     "components/caches.py",
-    "components/photogrepo.py",
     # Select the right env:
     "environments/{0}.py".format(_ENV),
     # Optionally override some settings:

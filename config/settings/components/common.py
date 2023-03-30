@@ -16,7 +16,7 @@ from config.settings.components import BASE_DIR, config
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
-SECRET_KEY = config("DJANGO_SECRET_KEY")
+SECRET_KEY = config("DEPENDENCY_DJANGO_SECRET_KEY", default="__CHANGEME__")
 
 # Application definition:
 
@@ -74,15 +74,15 @@ WSGI_APPLICATION = "config.wsgi.application"
 
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
-
+# Defaults to support PostgreSQL, maybe MariaDB in the future
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": config("POSTGRES_DB"),
-        "USER": config("POSTGRES_USER"),
-        "PASSWORD": config("POSTGRES_PASSWORD"),
-        "HOST": config("DJANGO_DATABASE_HOST"),
-        "PORT": config("DJANGO_DATABASE_PORT", cast=int),
+        "NAME": config("DEPENDENCY_DJANGO_DB_NAME", default="photogrepo"),
+        "USER": config("DEPENDENCY_DJANGO_DB_USER", default="photogrepo"),
+        "PASSWORD": config("DEPENDENCY_DJANGO_DB_PASSWORD", default="photogrepo"),
+        "HOST": config("DEPENDENCY_DJANGO_DB_HOST", default="localhost"),
+        "PORT": config("DEPENDENCY_DJANGO_DB_PORT", cast=int, default=5432),
         "CONN_MAX_AGE": config("CONN_MAX_AGE", cast=int, default=60),
         "OPTIONS": {
             "connect_timeout": 10,

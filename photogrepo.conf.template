@@ -16,7 +16,7 @@ DOMAIN_NAME={{ cookiecutter.project_domain }}
 
 # Generate yours with:
 # python3 -c 'from django.utils.crypto import get_random_string; print(get_random_string(50))'
-DJANGO_SECRET_KEY=__CHANGEME__
+DEPENDENCY_DJANGO_SECRET_KEY=__CHANGEME__
 
 
 # === Database ===
@@ -26,13 +26,13 @@ DJANGO_SECRET_KEY=__CHANGEME__
 # Cannot be renamed if you use postgres in docker.
 # See: https://hub.docker.com/_/postgres
 
-POSTGRES_DB={{ cookiecutter.project_name }}
-POSTGRES_USER={{ cookiecutter.project_name }}
-POSTGRES_PASSWORD={{ cookiecutter.project_name }}
+DEPENDENCY_DJANGO_DB_NAME={{ cookiecutter.project_name }}
+DEPENDENCY_DJANGO_DB_USER={{ cookiecutter.project_name }}
+DEPENDENCY_DJANGO_DB_PASSWORD={{ cookiecutter.project_name }}
 
 # Used only by django:
-DJANGO_DATABASE_HOST=localhost
-DJANGO_DATABASE_PORT=5432
+DEPENDENCY_DJANGO_DB_HOST=localhost
+DEPENDENCY_DJANGO_DB_PORT=5432
 
 # === Caddy ===
 

@@ -7,20 +7,20 @@ SECURITY WARNING: don't run with debug turned on in production!
 import logging
 import socket
 
-from config.settings.components import config
 from config.settings.components.common import INSTALLED_APPS, MIDDLEWARE
 from config.settings.components.csp import (
     CSP_CONNECT_SRC,
     CSP_IMG_SRC,
     CSP_SCRIPT_SRC,
 )
+from config.settings.components.photogrepo import HOSTING_DOMAIN_NAME
 
 # Setting the development status:
 
 DEBUG = True
 
 ALLOWED_HOSTS = [
-    config("DOMAIN_NAME"),
+    HOSTING_DOMAIN_NAME,
     "localhost",
     "0.0.0.0",  # noqa: S104
     "127.0.0.1",
