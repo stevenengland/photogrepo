@@ -13,7 +13,7 @@ from app.photos.services.consumer_service_interface import (
 
 
 @inject
-class PhotoConsumerService2(ConsumerServiceInterface):
+class PhotoConsumerService(ConsumerServiceInterface):
     def __init__(
         self,
         logging_service: LoggingServiceInterface = Provide[  # noqa: WPS404
