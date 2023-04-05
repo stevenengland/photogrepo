@@ -12,6 +12,7 @@ pytest
 pytest-cov
 pytest-django
 pytest-mock
+pytest-mockito
 pytest-timeout
 wemake-python-styleguide
 yamllint

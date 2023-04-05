@@ -25,6 +25,7 @@ pytest-cov==4.0.0
 python-decouple==3.8
 pytest-django==4.5.2
 pytest-mock==3.10.0
+pytest-mockito==0.0.4
 pytest-timeout==2.1.0
 structlog==22.3.0
 types-mock==5.0.0.5
