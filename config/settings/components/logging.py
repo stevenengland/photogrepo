@@ -12,6 +12,8 @@ from typing import TYPE_CHECKING, Callable, final
 
 import structlog
 
+from config.settings.components.photogrepo import LOGGING_LEVEL
+
 if TYPE_CHECKING:
     from django.http import HttpRequest, HttpResponse
 
@@ -56,7 +58,7 @@ LOGGING = {
         },
         "security": {
             "handlers": ["console"],
-            "level": "ERROR",
+            "level": LOGGING_LEVEL.upper(),
             "propagate": False,
         },
     },

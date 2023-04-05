@@ -30,10 +30,11 @@ class PhotoConsumerService(ConsumerServiceInterface):
         # Do preparatory work
         # ...
         # Finally copy the photo to the destination
+        dst_file_path = settings.PHOTOS_REPO_ROOTDIR  # type: ignore[misc]
+        self.logging_service.log_info(
+            f"Copying file from {src_file_path} to {dst_file_path}",
+        )
         self.file_system_service.copy_file(
             src_file_path=src_file_path,
-            dst_file_path=settings.PHOTOS_REPO_ROOTDIR,  # type: ignore[misc]
+            dst_file_path=dst_file_path,
         )
-
-    def print_something(self) -> None:
-        self.logging_service.log("Wrote log")

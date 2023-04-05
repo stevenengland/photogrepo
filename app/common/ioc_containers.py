@@ -7,4 +7,4 @@ from app.common.services.logging_service import LoggingService
 class Container(containers.DeclarativeContainer):
     config = providers.Configuration()
     file_system_service = providers.Factory(FileSystemService)
-    logging_service = providers.Singleton(LoggingService)
+    logging_service = providers.Factory(LoggingService)
