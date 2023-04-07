@@ -1,3 +1,6 @@
+import shutil
+
+import pytest
 from pytest_mock import MockerFixture
 
 from app.common.services import file_system_service
@@ -36,3 +39,10 @@ def test_copying_file_succeeds_if_path_exists(mocker: MockerFixture) -> None:
     fss.copy_file("testsrc", "testdst")
 
     mocked_copy.assert_called_once_with(src="testsrc", dst="testdst")
+
+
+def test_copy_throws_if_file_already_exists(when):
+    when(shutil).copy2(..., ...).thenRaise(shutil.SameFileError)
+    with pytest.raises(expected_exception=Exception, match="already exists"):
+        fss = file_system_service.FileSystemService()
+        fss.copy_file("testsrc", "testdst")
