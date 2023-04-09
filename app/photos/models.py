@@ -6,4 +6,4 @@ class Photo(models.Model):
     hash_md5 = models.CharField(max_length=32, unique=True)
 
     def __str__(self):
-        return f"Student {self.dest_file_path} ({self.hash_md5})"
+        return f"Photo {self.dest_file_path} ({self.hash_md5})"
