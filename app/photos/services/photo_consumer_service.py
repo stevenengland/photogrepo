@@ -38,3 +38,5 @@ class PhotoConsumerService(ConsumerServiceInterface):
             src_file_path=src_file_path,
             dst_file_path=dst_file_path,
         )
+
+        self.file_system_service.delete_file(src_file_path)
