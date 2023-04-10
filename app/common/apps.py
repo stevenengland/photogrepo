@@ -1,7 +1,5 @@
 from django.apps import AppConfig
 
-from app.common import container
-
 
 class CommonConfig(AppConfig):
     """The config."""
@@ -10,9 +8,11 @@ class CommonConfig(AppConfig):
     name = "app.common"
 
     def ready(self) -> None:
+        from app.common.ioc_containers import container  # noqa: WPS433
+
         container.wire(
             packages=[
-                "app.common",
                 "app.photos",
+                "app.common",
             ],
         )
