@@ -10,6 +10,7 @@ mypy
 nplusone
 pytest
 pytest-cov
+pytest-env
 pytest-django
 pytest-mock
 pytest-mockito

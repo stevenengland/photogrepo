@@ -17,7 +17,7 @@ lint:
 	@mypy . || true
 
 test:
-	@DJANGO_ENV=test pytest
+	@pytest
 
 pyclean:
 	@find . \
@@ -41,7 +41,7 @@ docker_lint:
 	 '
 
 docker_test:
-	@docker-compose -f docker-compose-dev.yml run --rm app sh -c "DJANGO_ENV=test pytest"
+	@docker-compose -f docker-compose-dev.yml run --rm app sh -c "pytest"
 
 
 #run:
