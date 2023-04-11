@@ -40,10 +40,10 @@ class PhotoConsumerService(ConsumerServiceInterface):
         self.photo_model_service = photo_model_service
         self.photo_analyzer_service = photo_analyzer_service
 
-    def consume(self, src_file_path: str) -> None:
-        # Do preparatory work
-        # ...
-        # Finally copy the photo to the destination
+    def consume(self, src_file_path: str) -> None:  # noqa: WPS210
+        self.logging_service.log_info(
+            f"Consumtion started for {src_file_path}",
+        )
         dst_file_path = settings.PHOTOS_REPO_ROOTDIR  # type: ignore[misc]
         self.logging_service.log_info(
             f"Copying file from {src_file_path} to {dst_file_path}",
@@ -52,15 +52,26 @@ class PhotoConsumerService(ConsumerServiceInterface):
             src_file_path=src_file_path,
             dst_file_path=dst_file_path,
         )
+
+        # After a successful copy action, gather facts from src file
+        hash_md5 = self.photo_analyzer_service.hash_md5(src_file_path)
+        hash_perceptual = self.photo_analyzer_service.hash_perceptual(src_file_path)
+        hash_difference = self.photo_analyzer_service.hash_difference(src_file_path)
+        hash_average = self.photo_analyzer_service.hash_average(src_file_path)
+        hash_wavelet = self.photo_analyzer_service.hash_wavelet(src_file_path)
+
         self.logging_service.log_info(
             f"Deleting file {src_file_path}",
         )
         self.file_system_service.delete_file(src_file_path)
-        md5hash = self.photo_analyzer_service.hash_md5(dst_file_path)
         self.logging_service.log_info(
             "Creating db entry for photo",
         )
         self.photo_model_service.photo_create(
             dest_file_path=dst_file_path,
-            hash_md5=md5hash,
+            hash_md5=hash_md5,
+            hash_perceptual=hash_perceptual,
+            hash_difference=hash_difference,
+            hash_average=hash_average,
+            hash_wavelet=hash_wavelet,
         )

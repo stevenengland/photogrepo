@@ -10,6 +10,7 @@ django_permissions_policy
 django-split-settings
 django-stubs
 djangorestframework-stubs[compatible-mypy]
+imagededup
 python-decouple
 psycopg2-binary
 structlog

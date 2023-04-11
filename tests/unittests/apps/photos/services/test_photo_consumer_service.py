@@ -55,11 +55,21 @@ def test_consume_deletes_file_after_copy_finished(pcs: PhotoConsumerService):
 
 def test_consume_creates_record_in_database(pcs: PhotoConsumerService, expect):
     settings.PHOTOS_REPO_ROOTDIR = "/test"
-    expect(pcs.photo_analyzer_service).hash_md5(...).thenReturn("testhash")
+    expect(pcs.photo_analyzer_service).hash_md5(...).thenReturn(  # noqa: WPS204
+        "md5",
+    )
+    expect(pcs.photo_analyzer_service).hash_perceptual(...).thenReturn("perceptual")
+    expect(pcs.photo_analyzer_service).hash_difference(...).thenReturn("diff")
+    expect(pcs.photo_analyzer_service).hash_average(...).thenReturn("avg")
+    expect(pcs.photo_analyzer_service).hash_wavelet(...).thenReturn("wavelet")
 
     pcs.consume(src_file_path="/test/test.jpg")
 
     verify(pcs.photo_model_service).photo_create(
         dest_file_path="/test",
-        hash_md5="testhash",
+        hash_md5="md5",
+        hash_perceptual="perceptual",
+        hash_difference="diff",
+        hash_average="avg",
+        hash_wavelet="wavelet",
     )
