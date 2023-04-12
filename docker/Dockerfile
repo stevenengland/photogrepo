@@ -91,10 +91,22 @@ FROM base_build as development_build
 
 WORKDIR /photogrepo
 
+# Pure testing dependencies
 COPY --chown=photogrepo:photogrepo ./tests/ ./tests/
 COPY [ \
   "setup.cfg", \
   ".yamllint.yml", \
   "pyproject.toml", \
+  "./" \
+]
+
+# Additional check dependencies (e.g. to be able to lint all files in repo)
+COPY --chown=photogrepo:photogrepo ./.github/ ./.github/
+COPY --chown=photogrepo:photogrepo ./docker/ ./docker/
+COPY --chown=photogrepo:photogrepo ./docs/ ./docs/
+COPY --chown=photogrepo:photogrepo ./tools/ ./tools/
+COPY [ \
+  ".pre-commit-config.yaml", \
+  "docker-compose*", \
   "./" \
 ]
