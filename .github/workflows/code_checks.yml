@@ -22,8 +22,8 @@ jobs:
       pull-requests: read
     # Set job outputs to values from filter step
     outputs:
-      backend: ${{ steps.filter.outputs.lint }}
-      frontend: ${{ steps.filter.outputs.test }}
+      lint: ${{ steps.filter.outputs.lint }}
+      test: ${{ steps.filter.outputs.test }}
     steps:
       # For pull requests it's not necessary to checkout the code
       - name: Create filters
