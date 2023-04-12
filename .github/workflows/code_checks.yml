@@ -70,15 +70,6 @@ jobs:
           path: .github/workflows/env_vars.txt
           log-variables: true
 
-      - name: Download artifact
-        uses: actions/download-artifact@v3
-        with:
-          name: photogrepo
-          path: /tmp
-
-      - name: Load docker image copy
-        run: docker load --input /tmp/photogrepo.tar
-
       - name: Run linter
         run: make docker_lint
 
@@ -102,15 +93,6 @@ jobs:
         with:
           path: .github/workflows/env_vars.txt
           log-variables: true
-
-      - name: Download artifact
-        uses: actions/download-artifact@v3
-        with:
-          name: photogrepo
-          path: /tmp
-
-      - name: Load docker image copy
-        run: docker load --input /tmp/photogrepo.tar
 
       - name: Run tests
         run: make docker_test
