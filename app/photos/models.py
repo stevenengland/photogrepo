@@ -8,6 +8,7 @@ class Photo(models.Model):
     hash_difference = models.CharField(max_length=32)
     hash_average = models.CharField(max_length=32)
     hash_wavelet = models.CharField(max_length=32)
+    encoding_cnn = models.TextField()
 
     def __str__(self):
         return f"Photo {self.dest_file_path} ({self.hash_md5})"

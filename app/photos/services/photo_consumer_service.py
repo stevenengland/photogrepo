@@ -59,6 +59,7 @@ class PhotoConsumerService(ConsumerServiceInterface):
         hash_difference = self.photo_analyzer_service.hash_difference(src_file_path)
         hash_average = self.photo_analyzer_service.hash_average(src_file_path)
         hash_wavelet = self.photo_analyzer_service.hash_wavelet(src_file_path)
+        encoding_cnn = self.photo_analyzer_service.encoding_cnn(src_file_path)
 
         self.logging_service.log_info(
             f"Deleting file {src_file_path}",
@@ -74,4 +75,5 @@ class PhotoConsumerService(ConsumerServiceInterface):
             hash_difference=hash_difference,
             hash_average=hash_average,
             hash_wavelet=hash_wavelet,
+            encoding_cnn=encoding_cnn,
         )

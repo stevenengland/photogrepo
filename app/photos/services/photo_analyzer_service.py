@@ -1,4 +1,4 @@
-from imagededup.methods import AHash, DHash, PHash, WHash
+from imagededup.methods import CNN, AHash, DHash, PHash, WHash
 
 from app.common import hashers
 from app.photos.services.photo_analyzer_service_interface import (
@@ -25,3 +25,8 @@ class PhotoAnalyzerService(PhotoAnalyzerServiceInterface):
     def hash_wavelet(self, file_path: str) -> str:
         hasher = WHash()
         return hasher.encode_image(file_path)
+
+    def encoding_cnn(self, file_path: str) -> str:
+        encoder = CNN()
+        encoding = encoder.encode_image(file_path)
+        return encoding.dumps().hex()

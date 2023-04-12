@@ -20,6 +20,7 @@ def test_photo_can_be_created(pms: PhotoModelService):
         hash_difference="testdifference",
         hash_average="testaverage",
         hash_wavelet="testwavelet",
+        encoding_cnn="testcnn",
     )
 
     assert photo.dest_file_path == "testpath"

@@ -62,6 +62,7 @@ def test_consume_creates_record_in_database(pcs: PhotoConsumerService, expect):
     expect(pcs.photo_analyzer_service).hash_difference(...).thenReturn("diff")
     expect(pcs.photo_analyzer_service).hash_average(...).thenReturn("avg")
     expect(pcs.photo_analyzer_service).hash_wavelet(...).thenReturn("wavelet")
+    expect(pcs.photo_analyzer_service).encoding_cnn(...).thenReturn("cnn")
 
     pcs.consume(src_file_path="/test/test.jpg")
 
@@ -72,4 +73,5 @@ def test_consume_creates_record_in_database(pcs: PhotoConsumerService, expect):
         hash_difference="diff",
         hash_average="avg",
         hash_wavelet="wavelet",
+        encoding_cnn="cnn",
     )

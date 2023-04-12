@@ -1,5 +1,6 @@
+import numpy
 import pytest
-from imagededup.methods import AHash, DHash, PHash, WHash
+from imagededup.methods import CNN, AHash, DHash, PHash, WHash
 
 from app.common import hashers
 from app.photos.services.photo_analyzer_service import PhotoAnalyzerService
@@ -39,3 +40,10 @@ def test_analyzer_returns_wavelet_hash(pas: PhotoAnalyzerService, expect):
     expect(WHash).encode_image(...).thenReturn("testhash")
 
     assert pas.hash_wavelet("testfile") == "testhash"
+
+
+@pytest.mark.timeout(20)
+def test_analyzer_returns_cnn_encoding(pas: PhotoAnalyzerService, when):
+    np_array = numpy.array([1, 2])
+    when(CNN).encode_image(...).thenReturn(np_array)
+    assert pas.encoding_cnn("testfile") == np_array.dumps().hex()

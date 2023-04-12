@@ -21,3 +21,7 @@ class PhotoAnalyzerServiceInterface(ABC):
     @abstractmethod
     def hash_wavelet(self, file_path: str) -> str:
         pass
+
+    @abstractmethod
+    def encoding_cnn(self, file_path: str) -> str:
+        pass

@@ -16,6 +16,7 @@ class PhotoModelService(PhotoModelServiceInterface):
         hash_difference: str,
         hash_average: str,
         hash_wavelet: str,
+        encoding_cnn: str,
     ) -> Photo:
         photo = Photo(
             dest_file_path=dest_file_path,
@@ -24,6 +25,7 @@ class PhotoModelService(PhotoModelServiceInterface):
             hash_difference=hash_difference,
             hash_average=hash_average,
             hash_wavelet=hash_wavelet,
+            encoding_cnn=encoding_cnn,
         )
         photo.full_clean()
         photo.save()
