@@ -13,5 +13,6 @@ class PhotoModelServiceInterface(ABC):
         hash_difference: str,
         hash_average: str,
         hash_wavelet: str,
+        encoding_cnn: str,
     ) -> Photo:
         pass
