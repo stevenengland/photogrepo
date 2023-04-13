@@ -6,6 +6,7 @@ from pytest_mock import MockerFixture
 
 from app.common import hashers
 from app.common.services import file_system_service
+from config.settings.components import BASE_DIR
 
 
 @pytest.fixture(scope="module", name="fss")
@@ -82,3 +83,36 @@ def test_delete_removes_file(
 ):
     expect(os, times=1).remove(...)
     fss.delete_file("testdst")
+
+
+def test_get_files_in_dir_should_return_array_of_2_elements_when_2_files_are_in_dir(
+    fss: file_system_service.FileSystemService,
+):
+    files = fss.get_files_in_dir(
+        str(BASE_DIR.joinpath("tests", "test_assets", "get_files_in_dir")),
+    )
+
+    assert len(files) == 2
+    assert files[0].endswith("test1.txt")
+    assert files[1].endswith("test2.txt")
+
+
+def test_get_files_in_dir_should_return_array_of_3_elements_when_3_files_are_in_dir_and_subdir(
+    fss: file_system_service.FileSystemService,
+):
+    files = fss.get_files_in_dir(
+        str(BASE_DIR.joinpath("tests", "test_assets", "get_files_in_dir")),
+        recursive=True,
+    )
+
+    assert len(files) == 3
+    assert files[0].endswith("test1.txt")
+    assert files[1].endswith("test2.txt")
+    assert files[2].endswith("test3.txt")
+
+
+def test_get_files_in_dir_should_throw_when_directory_is_invalid(
+    fss: file_system_service.FileSystemService,
+):
+    with pytest.raises(expected_exception=Exception, match="is not a directory"):
+        fss.get_files_in_dir("/testdirthatdoesnotexist")
