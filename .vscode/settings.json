@@ -25,7 +25,10 @@
     ],
     "isort.importStrategy": "fromEnvironment",
     "python.formatting.blackPath": ".venv/bin/black",
-    "python.testing.pytestArgs": [],
+    "python.testing.pytestArgs": [
+      "--no-cov",
+      "--timeout=0"
+    ],
     "python.testing.unittestEnabled": false,
     "python.testing.pytestEnabled": true,
     "python.testing.pytestPath": ".venv/bin/pytest",

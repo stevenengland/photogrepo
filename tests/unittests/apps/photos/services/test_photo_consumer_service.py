@@ -75,3 +75,16 @@ def test_consume_creates_record_in_database(pcs: PhotoConsumerService, expect):
         hash_wavelet="wavelet",
         encoding_cnn="cnn",
     )
+
+
+def test_consume_dir_triggers_consume_for_each_file_in_dir(
+    pcs: PhotoConsumerService,
+    expect,
+    when,
+):
+    when(pcs.file_system_service).get_files_in_dir(..., ...).thenReturn(
+        ["/test/test1.jpg", "/test/test2.txt", "/test/test3.mpg"],
+    )
+    expect(pcs, times=3).consume(...)
+
+    pcs.consume_dir("/test")
