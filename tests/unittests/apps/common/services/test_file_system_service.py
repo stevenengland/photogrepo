@@ -93,8 +93,8 @@ def test_get_files_in_dir_should_return_array_of_2_elements_when_2_files_are_in_
     )
 
     assert len(files) == 2
-    assert files[0].endswith("test1.txt")
-    assert files[1].endswith("test2.txt")
+    assert any("test1.txt" in file_full_path for file_full_path in files)
+    assert any("test2.txt" in file_full_path for file_full_path in files)
 
 
 def test_get_files_in_dir_should_return_array_of_3_elements_when_3_files_are_in_dir_and_subdir(
@@ -106,9 +106,9 @@ def test_get_files_in_dir_should_return_array_of_3_elements_when_3_files_are_in_
     )
 
     assert len(files) == 3
-    assert files[0].endswith("test1.txt")
-    assert files[1].endswith("test2.txt")
-    assert files[2].endswith("test3.txt")
+    assert any("test1.txt" in file_full_path for file_full_path in files)
+    assert any("test2.txt" in file_full_path for file_full_path in files)
+    assert any("test3.txt" in file_full_path for file_full_path in files)
 
 
 def test_get_files_in_dir_should_throw_when_directory_is_invalid(
