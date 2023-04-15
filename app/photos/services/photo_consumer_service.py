@@ -77,3 +77,12 @@ class PhotoConsumerService(ConsumerServiceInterface):
             hash_wavelet=hash_wavelet,
             encoding_cnn=encoding_cnn,
         )
+
+    def consume_dir(self, src_dir_path: str, recursive: bool = False) -> None:
+        files = self.file_system_service.get_files_in_dir(
+            src_dir_path,
+            recursive,
+        )
+
+        for photo_files in files:
+            self.consume(photo_files)

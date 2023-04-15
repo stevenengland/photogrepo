@@ -8,6 +8,15 @@ HOSTING_DOMAIN_NAME: str = config("PHOTOGREPO_HOSTING_DOMAIN_NAME", default="loc
 
 LOGGING_LEVEL: str = config("PHOTOGREPO_LOGGING_LEVEL", default="info")
 
+PHOTOS_CONSUME_RECURSIVE: bool = config(
+    "PHOTOGREPO_PHOTOS_CONSUME_RECURSIVE",
+    default=False,
+)
+PHOTOS_CONSUME_ROOTDIR: str = config(
+    "PHOTOGREPO_PHOTOS_CONSUME_ROOTDIR",
+    default=f"{special_dirs.user_data_dir}/consume",
+)
+
 PHOTOS_REPO_ROOTDIR: str = config(
     "PHOTOGREPO_PHOTOS_REPO_ROOT_DIR",
     default=f"{special_dirs.user_data_dir}/photos",
