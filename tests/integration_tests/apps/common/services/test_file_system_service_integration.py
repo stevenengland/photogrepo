@@ -2,6 +2,7 @@ import pytest
 
 from app.common.services import file_system_service
 from config.settings.components import BASE_DIR
+from tests.file_system_helper import FakeFileSystemHelper
 
 
 @pytest.fixture(scope="function", name="fss")
@@ -12,7 +13,7 @@ def photo_consumer_service() -> file_system_service.FileSystemService:
 
 def test_get_files_in_dir_should_return_array_of_2_elements_when_2_files_are_in_dir(
     fss: file_system_service.FileSystemService,
-    test_assets_fs,
+    test_assets_fs: FakeFileSystemHelper,
 ):
     files = fss.get_files_in_dir(
         str(test_assets_fs.test_assets_path.joinpath("get_files_in_dir")),

@@ -6,26 +6,10 @@ It may be also used for extending doctest's context:
 2. https://docs.pytest.org/en/latest/doctest.html
 """
 
-from pathlib import PurePath
-
 import pytest
-from pyfakefs.fake_filesystem import FakeFilesystem
 
 from config.settings.environments.test import TEST_ASSETS_DIR
-
-
-class FakeFileSystemHelper(object):
-    def __init__(self, test_assets_path: PurePath, file_system: FakeFilesystem) -> None:
-        self._test_assets_path = test_assets_path
-        self._file_system = file_system
-
-    @property
-    def test_assets_path(self) -> PurePath:
-        return self._test_assets_path
-
-    @property
-    def file_system(self) -> FakeFilesystem:
-        return self._file_system
+from tests.file_system_helper import FakeFileSystemHelper
 
 
 @pytest.fixture
