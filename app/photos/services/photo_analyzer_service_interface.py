@@ -25,3 +25,7 @@ class PhotoAnalyzerServiceInterface(ABC):
     @abstractmethod
     def encoding_cnn(self, file_path: str) -> str:
         pass
+
+    @abstractmethod
+    def validate_image(self, file_path: str, extended_checks: bool = False) -> None:
+        pass
