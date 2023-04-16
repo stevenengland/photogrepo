@@ -8,6 +8,7 @@ django-querycount
 django_test_migrations
 mypy
 nplusone
+pyfakefs
 pytest
 pytest-cov
 pytest-env

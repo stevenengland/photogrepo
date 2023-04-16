@@ -7,6 +7,7 @@ SECURITY WARNING: don't run with debug turned on in production!
 import logging
 import socket
 
+from config.settings.components import BASE_DIR
 from config.settings.components.common import INSTALLED_APPS, MIDDLEWARE
 from config.settings.components.csp import (
     CSP_CONNECT_SRC,
@@ -146,3 +147,5 @@ EXTRA_CHECKS = {
         "field-choices-constraint",
     ],
 }
+
+TEST_ASSETS_DIR = BASE_DIR.joinpath("tests", "test_assets")
