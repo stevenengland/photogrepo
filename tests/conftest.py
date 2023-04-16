@@ -8,6 +8,16 @@ It may be also used for extending doctest's context:
 
 import pytest
 
+from config.settings.environments.test import TEST_ASSETS_DIR
+from tests.file_system_helper import FakeFileSystemHelper
+
+
+@pytest.fixture
+def test_assets_fs(fs):
+    fs.add_real_directory(TEST_ASSETS_DIR)
+    fsh = FakeFileSystemHelper(TEST_ASSETS_DIR, fs)
+    yield fsh
+
 
 @pytest.fixture(autouse=True)
 def _django_db_setup(settings):
