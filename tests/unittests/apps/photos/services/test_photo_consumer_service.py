@@ -1,10 +1,10 @@
-from datetime import datetime
-
 import pytest
-import time_machine
 from django.conf import settings
 from mockito import mock, verify
 
+from app.common.services.file_name_generator_service_interface import (
+    FileNameGeneratorServiceInterface,
+)
 from app.common.services.file_system_service_interface import (
     FileSystemServiceInterface,
 )
@@ -17,27 +17,32 @@ from app.photos.services.photo_model_service_interface import (
     PhotoModelServiceInterface,
 )
 
-iso8601_test_str = "2022-10-01"
-
 
 @pytest.fixture(scope="function", name="pcs")
 def photo_consumer_service() -> PhotoConsumerService:
     file_system_service_mock = mock(FileSystemServiceInterface, strict=False)
+    file_name_generator_service_mock = mock(
+        FileNameGeneratorServiceInterface,
+        strict=False,
+    )
     logging_service_mock = mock(LoggingServiceInterface, strict=False)
     photo_model_service = mock(PhotoModelServiceInterface, strict=False)
     photo_analyzer_service = mock(PhotoAnalyzerService, strict=False)
     pcs = PhotoConsumerService(
         logging_service=logging_service_mock,
         file_system_service=file_system_service_mock,
+        file_name_generator_service=file_name_generator_service_mock,
         photo_model_service=photo_model_service,
         photo_analyzer_service=photo_analyzer_service,
     )
     return pcs  # noqa: WPS331
 
 
-@time_machine.travel(datetime.fromisoformat(iso8601_test_str))
 def test_consume_copies_file_to_destination(pcs: PhotoConsumerService, expect, when):
     settings.PHOTOS_REPO_ROOTDIR = "/testtarget"
+    when(pcs.file_name_generator_service).create_with_date_postfix(...).thenReturn(
+        "test_20221001000000.jpg",
+    )
     expect(pcs.file_system_service, times=1).copy_file(
         src_file_path="/test/test.jpg",
         dst_file_path="/testtarget/test_20221001000000.jpg",
@@ -46,9 +51,11 @@ def test_consume_copies_file_to_destination(pcs: PhotoConsumerService, expect, w
     pcs.consume(src_file_path="/test/test.jpg")
 
 
-@time_machine.travel(datetime.fromisoformat(iso8601_test_str))
-def test_consume_deletes_file_after_copy_finished(pcs: PhotoConsumerService):
+def test_consume_deletes_file_after_copy_finished(pcs: PhotoConsumerService, when):
     settings.PHOTOS_REPO_ROOTDIR = "/testtarget"
+    when(pcs.file_name_generator_service).create_with_date_postfix(...).thenReturn(
+        "test_20221001000000.jpg",
+    )
 
     pcs.consume(src_file_path="/test/test.jpg")
 
@@ -60,9 +67,11 @@ def test_consume_deletes_file_after_copy_finished(pcs: PhotoConsumerService):
     verify(pcs.file_system_service, inorder=True).delete_file("/test/test.jpg")
 
 
-@time_machine.travel(datetime.fromisoformat(iso8601_test_str))
-def test_consume_creates_record_in_database(pcs: PhotoConsumerService, expect):
+def test_consume_creates_record_in_database(pcs: PhotoConsumerService, expect, when):
     settings.PHOTOS_REPO_ROOTDIR = "/testtarget"
+    when(pcs.file_name_generator_service).create_with_date_postfix(...).thenReturn(
+        "test_20221001000000.jpg",
+    )
     expect(pcs.photo_analyzer_service).hash_md5(...).thenReturn(  # noqa: WPS204
         "md5",
     )
@@ -98,12 +107,26 @@ def test_consume_dir_triggers_consume_for_each_file_in_dir(
     pcs.consume_dir("/test")
 
 
-@time_machine.travel(datetime.fromisoformat(iso8601_test_str))
 def test_consume_dir_should_not_stop_consuming_files_when_one_file_of_many_is_not_consumable(
     pcs: PhotoConsumerService,
     when,
 ):
     settings.PHOTOS_REPO_ROOTDIR = "/testtarget"
+    when(pcs.file_name_generator_service).create_with_date_postfix(
+        "test1.jpg",
+    ).thenReturn(
+        "test1_20221001000000.jpg",
+    )
+    when(pcs.file_name_generator_service).create_with_date_postfix(
+        "test2.txt",
+    ).thenReturn(
+        "test2_20221001000000.txt",
+    )
+    when(pcs.file_name_generator_service).create_with_date_postfix(
+        "test3.mpg",
+    ).thenReturn(
+        "test3_20221001000000.mpg",
+    )
     when(pcs.file_system_service).get_files_in_dir(..., ...).thenReturn(
         ["/test/test1.jpg", "/test/test2.txt", "/test/test3.mpg"],
     )
