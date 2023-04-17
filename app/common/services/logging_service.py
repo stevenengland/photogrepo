@@ -13,3 +13,9 @@ class LoggingService(LoggingServiceInterface):
 
     def log_info(self, message: str) -> None:
         self.logger.info(message)
+
+    def log_warning(self, message: str) -> None:
+        self.logger.warning(message)
+
+    def log_error(self, message: str) -> None:
+        self.logger.error(message)
