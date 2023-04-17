@@ -40,7 +40,24 @@ class PhotoConsumerService(ConsumerServiceInterface):
         self.photo_model_service = photo_model_service
         self.photo_analyzer_service = photo_analyzer_service
 
-    def consume(self, src_file_path: str) -> None:  # noqa: WPS210
+    def consume(self, src_file_path: str) -> None:
+        try:
+            self._consume(src_file_path)
+        except Exception as exc:
+            self.logging_service.log_info(
+                f"Consumtion afiled for {src_file_path} with error:\n\n{str(exc)}",
+            )
+
+    def consume_dir(self, src_dir_path: str, recursive: bool = False) -> None:
+        files = self.file_system_service.get_files_in_dir(
+            src_dir_path,
+            recursive,
+        )
+
+        for photo_files in files:
+            self.consume(photo_files)
+
+    def _consume(self, src_file_path: str) -> None:  # noqa: WPS210
         self.logging_service.log_info(
             f"Consumtion started for {src_file_path}",
         )
@@ -77,12 +94,3 @@ class PhotoConsumerService(ConsumerServiceInterface):
             hash_wavelet=hash_wavelet,
             encoding_cnn=encoding_cnn,
         )
-
-    def consume_dir(self, src_dir_path: str, recursive: bool = False) -> None:
-        files = self.file_system_service.get_files_in_dir(
-            src_dir_path,
-            recursive,
-        )
-
-        for photo_files in files:
-            self.consume(photo_files)

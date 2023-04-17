@@ -88,3 +88,27 @@ def test_consume_dir_triggers_consume_for_each_file_in_dir(
     expect(pcs, times=3).consume(...)
 
     pcs.consume_dir("/test")
+
+
+def test_consume_dir_should_not_stop_consuming_files_when_one_file_of_many_is_not_consumable(
+    pcs: PhotoConsumerService,
+    when,
+):
+    settings.PHOTOS_REPO_ROOTDIR = "/test"
+    when(pcs.file_system_service).get_files_in_dir(..., ...).thenReturn(
+        ["/test/test1.jpg", "/test/test2.txt", "/test/test3.mpg"],
+    )
+    when(pcs.file_system_service).copy_file(
+        src_file_path="/test/test1.jpg",
+        dst_file_path="/test",
+    )
+    when(pcs.file_system_service).copy_file(
+        src_file_path="/test/test2.txt",
+        dst_file_path="/test",
+    ).thenRaise(Exception("test"))
+    when(pcs.file_system_service).copy_file(
+        src_file_path="/test/test3.mpg",
+        dst_file_path="/test",
+    )
+
+    pcs.consume_dir("/test")
