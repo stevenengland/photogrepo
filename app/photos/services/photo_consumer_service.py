@@ -1,4 +1,5 @@
 import os
+from datetime import datetime
 
 from dependency_injector.wiring import Provide, inject
 from django.conf import settings
@@ -59,11 +60,18 @@ class PhotoConsumerService(ConsumerServiceInterface):
         for photo_files in files:
             self.consume(photo_files)
 
+    def _generate_unique_filename(self, filename: str) -> str:
+        filename_parts = filename.split(".", 1)
+        uniqueness = datetime.now().strftime("%Y%m%d%H%M%S")
+        return f"{filename_parts[0]}_{uniqueness}.{filename_parts[1]}"
+
     def _consume(self, src_file_path: str) -> None:  # noqa: WPS210
         self.logging_service.log_info(
             f"Consumtion started for {src_file_path}",
         )
         dst_file_path = self._construct_dst_file_path(src_file_path)
+
+        # Phase 1: Nothing to roll back if action fails
         self.logging_service.log_info(
             f"Copying file from {src_file_path} to {dst_file_path}",
         )
@@ -72,6 +80,7 @@ class PhotoConsumerService(ConsumerServiceInterface):
             dst_file_path=dst_file_path,
         )
 
+        # Phase 2: If something fails, the src file needs to be deleted
         # After a successful copy action, gather facts from src file
         hash_md5 = self.photo_analyzer_service.hash_md5(src_file_path)
         hash_perceptual = self.photo_analyzer_service.hash_perceptual(src_file_path)
@@ -80,10 +89,6 @@ class PhotoConsumerService(ConsumerServiceInterface):
         hash_wavelet = self.photo_analyzer_service.hash_wavelet(src_file_path)
         encoding_cnn = self.photo_analyzer_service.encoding_cnn(src_file_path)
 
-        self.logging_service.log_info(
-            f"Deleting file {src_file_path}",
-        )
-        self.file_system_service.delete_file(src_file_path)
         self.logging_service.log_info(
             "Creating db entry for photo",
         )
@@ -97,6 +102,11 @@ class PhotoConsumerService(ConsumerServiceInterface):
             encoding_cnn=encoding_cnn,
         )
 
+        self.logging_service.log_info(
+            f"Deleting file {src_file_path}",
+        )
+        self.file_system_service.delete_file(src_file_path)
+
     def _construct_dst_file_path(self, src_file_path: str) -> str:
-        dst_file_name = os.path.basename(src_file_path)
+        dst_file_name = self._generate_unique_filename(os.path.basename(src_file_path))
         return os.path.join(settings.PHOTOS_REPO_ROOTDIR, dst_file_name)  # type: ignore[misc]
