@@ -1,3 +1,5 @@
+import os
+
 from dependency_injector.wiring import Provide, inject
 from django.conf import settings
 
@@ -61,7 +63,7 @@ class PhotoConsumerService(ConsumerServiceInterface):
         self.logging_service.log_info(
             f"Consumtion started for {src_file_path}",
         )
-        dst_file_path = settings.PHOTOS_REPO_ROOTDIR  # type: ignore[misc]
+        dst_file_path = self._construct_dst_file_path(src_file_path)
         self.logging_service.log_info(
             f"Copying file from {src_file_path} to {dst_file_path}",
         )
@@ -94,3 +96,7 @@ class PhotoConsumerService(ConsumerServiceInterface):
             hash_wavelet=hash_wavelet,
             encoding_cnn=encoding_cnn,
         )
+
+    def _construct_dst_file_path(self, src_file_path: str) -> str:
+        dst_file_name = os.path.basename(src_file_path)
+        return os.path.join(settings.PHOTOS_REPO_ROOTDIR, dst_file_name)  # type: ignore[misc]
