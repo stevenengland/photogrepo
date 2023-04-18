@@ -9,7 +9,7 @@ class LoggingService(LoggingServiceInterface):
     def __init__(
         self,
     ) -> None:
-        self.logger = structlog.get_logger()
+        self.logger = structlog.get_logger("django")
 
     def log_info(self, message: str) -> None:
         self.logger.info(message)
