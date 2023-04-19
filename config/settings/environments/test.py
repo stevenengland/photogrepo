@@ -7,8 +7,6 @@ SECURITY WARNING: don't run with debug turned on in production!
 import logging
 import socket
 
-import structlog
-
 from config.settings.components import BASE_DIR
 from config.settings.components.common import INSTALLED_APPS, MIDDLEWARE
 from config.settings.components.csp import (
@@ -151,50 +149,3 @@ EXTRA_CHECKS = {
 }
 
 TEST_ASSETS_DIR = BASE_DIR.joinpath("tests", "test_assets")
-
-LOGGING = {
-    "version": 1,
-    "disable_existing_loggers": False,
-    # We use these formatters in our `'handlers'` configuration.
-    # Probably, you won't need to modify these lines.
-    # Unless, you know what you are doing.
-    "formatters": {
-        "json_formatter": {
-            "()": structlog.stdlib.ProcessorFormatter,
-            "processor": structlog.processors.JSONRenderer(),
-        },
-        "console": {
-            "()": structlog.stdlib.ProcessorFormatter,
-            "processor": structlog.processors.KeyValueRenderer(
-                key_order=["timestamp", "level", "event", "logger"],
-            ),
-        },
-    },
-    # You can easily swap `key/value` (default) output and `json` ones.
-    # Use `'json_console'` if you need `json` logs.
-    "handlers": {
-        "console": {
-            "class": "logging.StreamHandler",
-            "formatter": "console",
-        },
-        "json_console": {
-            "class": "logging.StreamHandler",
-            "formatter": "json_formatter",
-        },
-    },
-    # These loggers are required by our app:
-    # - django is required when using `logger.getLogger('django')`
-    # - security is required by `axes`
-    "loggers": {
-        "django": {
-            "handlers": ["console"],
-            "propagate": True,
-            "level": "INFO",
-        },
-        "security": {
-            "handlers": ["console"],
-            "level": "INFO",
-            "propagate": False,
-        },
-    },
-}

@@ -12,23 +12,8 @@
             "args": [
                 "runserver"
             ],
-            "django": true, // tells VS Code to enable debugging of Django page templates
-            "justMyCode": true,
-            "console": "integratedTerminal"
-        },
-        {
-            // Alternative if not using vscode extension. Add arguments to debug only specific tests via args or .env, otherwise all tests are debugged.
-            "name": "PyTest: Django",
-            "type": "python",
-            "request": "launch",
-            "stopOnEntry": false,
-            "program": "${config:python.testing.pytestPath}",
-            "args": [
-              "--no-cov",
-              "--timeout=0",
-            ],
-            "cwd": "${workspaceRoot}",
-            "console": "integratedTerminal"
+            "django": true,
+            "justMyCode": true
         }
     ]
 }

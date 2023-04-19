@@ -16,6 +16,5 @@ pytest-django
 pytest-mock
 pytest-mockito
 pytest-timeout
-time-machine
 wemake-python-styleguide
 yamllint

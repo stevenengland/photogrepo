@@ -12,7 +12,7 @@ from typing import TYPE_CHECKING, Callable, final
 
 import structlog
 
-from config.settings.components.photogrepo import LOGGING_FILE, LOGGING_LEVEL
+from config.settings.components.photogrepo import LOGGING_LEVEL
 
 if TYPE_CHECKING:
     from django.http import HttpRequest, HttpResponse
@@ -31,7 +31,7 @@ LOGGING = {
         "console": {
             "()": structlog.stdlib.ProcessorFormatter,
             "processor": structlog.processors.KeyValueRenderer(
-                key_order=["level", "event"],
+                key_order=["timestamp", "level", "event", "logger"],
             ),
         },
     },
@@ -46,20 +46,15 @@ LOGGING = {
             "class": "logging.StreamHandler",
             "formatter": "json_formatter",
         },
-        "json_file": {
-            "class": "logging.handlers.WatchedFileHandler",
-            "filename": LOGGING_FILE,
-            "formatter": "json_formatter",
-        },
     },
     # These loggers are required by our app:
     # - django is required when using `logger.getLogger('django')`
     # - security is required by `axes`
     "loggers": {
         "django": {
-            "handlers": ["console", "json_file"],
+            "handlers": ["console"],
             "propagate": True,
-            "level": LOGGING_LEVEL.upper(),
+            "level": "INFO",
         },
         "security": {
             "handlers": ["console"],
