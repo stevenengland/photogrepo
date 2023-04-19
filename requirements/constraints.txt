@@ -1,5 +1,5 @@
 appdirs==1.4.4
-black==23.1.0
+black==23.3.0
 dependency-injector==4.41.0
 django==4.1.6
 django-axes==5.40.1
