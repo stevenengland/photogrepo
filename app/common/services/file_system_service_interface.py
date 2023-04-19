@@ -13,3 +13,7 @@ class FileSystemServiceInterface(abc.ABC):
     @abc.abstractmethod
     def get_files_in_dir(self, dir_path: str, recursive: bool = False) -> list[str]:
         pass
+
+    @abc.abstractmethod
+    def create_tmp_file(self) -> str:
+        pass

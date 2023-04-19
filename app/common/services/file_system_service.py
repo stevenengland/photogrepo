@@ -1,5 +1,6 @@
 import os
 import shutil
+import tempfile
 
 from app.common import hashers
 from app.common.exceptions import ApplicationError
@@ -46,6 +47,10 @@ class FileSystemService(FileSystemServiceInterface):
             return self._get_files_in_dir_recursive(dir_path)
 
         return self._get_files_in_dir(dir_path)
+
+    def create_tmp_file(self) -> str:
+        file_handle, path = tempfile.mkstemp(suffix=".media", prefix="photogrepo_")
+        return path
 
     def _get_files_in_dir_recursive(
         self,
