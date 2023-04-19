@@ -1,6 +1,6 @@
 from dependency_injector.wiring import Provide, inject
 from django.conf import settings
-from django.core.management.base import BaseCommand, CommandError
+from django.core.management.base import BaseCommand
 
 from app.common.services.logging_service_interface import (
     LoggingServiceInterface,
@@ -13,8 +13,19 @@ from app.photos.services.consumer_service_interface import (
 @inject
 class Command(BaseCommand):
     help = "Consumes all photo files in the consume directory."
-    photo_consumer_service: ConsumerServiceInterface = Provide["photo_consumer_service"]
-    logging_service: LoggingServiceInterface = Provide["logging_service"]
+
+    def __init__(
+        self,
+        logging_service: LoggingServiceInterface = Provide[  # noqa: WPS404
+            "logging_service"
+        ],
+        photo_consumer_service: ConsumerServiceInterface = Provide[  # noqa: WPS404
+            "photo_consumer_service"
+        ],
+    ) -> None:
+        self.logging_service = logging_service
+        self.photo_consumer_service = photo_consumer_service
+        super().__init__()
 
     def handle(self, *args, **kwargs):  # noqa: WPS110
         self.logging_service.log_info("Starting consumption.")
@@ -24,4 +35,7 @@ class Command(BaseCommand):
                 settings.PHOTOS_CONSUME_RECURSIVE,  # type: ignore[misc]
             )
         except Exception as exc:
-            raise CommandError(f"Consume failed for one or more images.\n\n{str(exc)}")
+            self.logging_service.log_error(
+                f"Consume failed for one or more images: {str(exc)}",
+            )
+            raise exc
