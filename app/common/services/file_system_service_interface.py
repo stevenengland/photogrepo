@@ -15,5 +15,5 @@ class FileSystemServiceInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def create_tmp_file(self) -> str:
+    def create_tmp_dir(self) -> str:
         pass

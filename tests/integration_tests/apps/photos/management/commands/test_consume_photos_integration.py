@@ -31,6 +31,7 @@ def call_test_command(*args, **kwargs) -> tuple[str, str]:
     return (out.getvalue(), err.getvalue())
 
 
+@pytest.mark.timeout(10)
 @pytest.mark.django_db
 def test_consume_photos_should_consume_2_photos_when_2_photos_are_in_consume_dir(  # noqa: WPS218
     cffs: FakeFileSystemHelper,

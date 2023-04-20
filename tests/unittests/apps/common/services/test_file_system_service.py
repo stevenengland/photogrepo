@@ -112,8 +112,8 @@ def test_create_temp_file_should_return_file_path(
     fss: file_system_service.FileSystemService,
     when,
 ):
-    when(tempfile).mkstemp(...).thenReturn((123, "tempfile"))
-    assert fss.create_tmp_file() == "tempfile"
+    when(tempfile).mkdtemp(...).thenReturn("tempfile")
+    assert fss.create_tmp_dir() == "tempfile"
 
 
 class DirEntry:  # noqa: WPS306

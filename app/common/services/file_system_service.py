@@ -2,6 +2,8 @@ import os
 import shutil
 import tempfile
 
+from django.conf import settings
+
 from app.common import hashers
 from app.common.exceptions import ApplicationError
 from app.common.services.file_system_service_interface import (
@@ -48,9 +50,11 @@ class FileSystemService(FileSystemServiceInterface):
 
         return self._get_files_in_dir(dir_path)
 
-    def create_tmp_file(self) -> str:
-        file_handle, path = tempfile.mkstemp(suffix=".media", prefix="photogrepo_")
-        return path
+    def create_tmp_dir(self) -> str:
+        return tempfile.mkdtemp(
+            prefix="photogrepo_",
+            dir=settings.TMP_ROOTDIR,  # type: ignore[misc]
+        )
 
     def _get_files_in_dir_recursive(
         self,
