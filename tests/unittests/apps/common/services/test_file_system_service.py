@@ -108,12 +108,12 @@ def test_get_files_in_dir_should_throw_when_directory_is_invalid(
         fss.get_files_in_dir("/testdirthatdoesnotexist")
 
 
-def test_create_temp_file_should_return_file_path(
+def test_create_temp_dir_should_return_tmp_dir_path(
     fss: file_system_service.FileSystemService,
     when,
 ):
-    when(tempfile).mkdtemp(...).thenReturn("tempfile")
-    assert fss.create_tmp_dir() == "tempfile"
+    when(tempfile).mkdtemp(...).thenReturn("tempdir")
+    assert fss.create_tmp_dir("/tmpdir") == "tempdir"  # noqa: S108
 
 
 class DirEntry:  # noqa: WPS306

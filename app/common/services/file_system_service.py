@@ -1,8 +1,7 @@
 import os
 import shutil
 import tempfile
-
-from django.conf import settings
+from typing import Optional
 
 from app.common import hashers
 from app.common.exceptions import ApplicationError
@@ -11,7 +10,7 @@ from app.common.services.file_system_service_interface import (
 )
 
 
-class FileSystemService(FileSystemServiceInterface):
+class FileSystemService(FileSystemServiceInterface):  # noqa: WPS214
     def copy_file(self, src_file_path: str, dst_file_path: str) -> None:
         if not os.path.exists(dst_file_path):
             os.makedirs(
@@ -50,11 +49,14 @@ class FileSystemService(FileSystemServiceInterface):
 
         return self._get_files_in_dir(dir_path)
 
-    def create_tmp_dir(self) -> str:
+    def create_tmp_dir(self, dest_dir: Optional[str] = None) -> str:
         return tempfile.mkdtemp(
             prefix="photogrepo_",
-            dir=settings.TMP_ROOTDIR,  # type: ignore[misc]
+            dir=dest_dir,
         )
+
+    def delete_dir(self, dir_path) -> None:
+        shutil.rmtree(dir_path)
 
     def _get_files_in_dir_recursive(
         self,

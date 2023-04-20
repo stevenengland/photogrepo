@@ -1,3 +1,5 @@
+import os
+
 import pytest
 
 from app.common.services import file_system_service
@@ -36,3 +38,27 @@ def test_get_files_in_dir_should_return_array_of_3_elements_when_3_files_are_in_
     assert any("test1.txt" in file_full_path for file_full_path in files)
     assert any("test2.txt" in file_full_path for file_full_path in files)
     assert any("test3.txt" in file_full_path for file_full_path in files)
+
+
+def test_create_temp_dir_should_return_tmp_dir_path(
+    fss: file_system_service.FileSystemService,
+    test_assets_fs: FakeFileSystemHelper,
+):
+    tmproot = test_assets_fs.file_system.create_dir(
+        str(test_assets_fs.test_assets_path.joinpath("tmp")),
+    ).path
+    tmpdir = fss.create_tmp_dir(tmproot)
+    assert "tmp/photogrepo_" in tmpdir
+
+
+def test_delete_dir_should_delete_dir_when_dir_is_not_empty(
+    fss: file_system_service.FileSystemService,
+    test_assets_fs: FakeFileSystemHelper,
+):
+    dir2delete = test_assets_fs.file_system.create_dir(
+        str(test_assets_fs.test_assets_path.joinpath("tmp")),
+    ).path
+    test_assets_fs.file_system.create_file(f"{dir2delete}/file.txt")
+
+    fss.delete_dir(dir2delete)
+    assert not os.path.exists(dir2delete)
