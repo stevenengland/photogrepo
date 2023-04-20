@@ -38,10 +38,20 @@ def photo_consumer_service() -> PhotoConsumerService:
     return pcs  # noqa: WPS331
 
 
-def test_consume_copies_file_to_destination(pcs: PhotoConsumerService, expect, when):
+@pytest.mark.django_db
+def test_consume_should_copy_file_to_tmp_and_then_to_destination(
+    pcs: PhotoConsumerService,
+    expect,
+    when,
+):
     settings.PHOTOS_REPO_ROOTDIR = "/testtarget"
+    when(pcs.file_system_service).create_tmp_dir(...).thenReturn("/testtmp")
     when(pcs.file_name_generator_service).create_with_date_postfix(...).thenReturn(
         "test_20221001000000.jpg",
+    )
+    expect(pcs.file_system_service, times=1).copy_file(
+        src_file_path="/test/test.jpg",
+        dst_file_path="/testtmp/test.jpg",
     )
     expect(pcs.file_system_service, times=1).copy_file(
         src_file_path="/test/test.jpg",
@@ -51,22 +61,34 @@ def test_consume_copies_file_to_destination(pcs: PhotoConsumerService, expect, w
     pcs.consume(src_file_path="/test/test.jpg")
 
 
-def test_consume_deletes_file_after_copy_finished(pcs: PhotoConsumerService, when):
+@pytest.mark.django_db
+def test_consume_should_copy_and_delete_files_and_dirs_in_correct_order(
+    pcs: PhotoConsumerService,
+    when,
+):
     settings.PHOTOS_REPO_ROOTDIR = "/testtarget"
     when(pcs.file_name_generator_service).create_with_date_postfix(...).thenReturn(
         "test_20221001000000.jpg",
     )
+    when(pcs.file_system_service).create_tmp_dir(...).thenReturn("/testtmp")
 
     pcs.consume(src_file_path="/test/test.jpg")
 
+    verify(pcs.file_system_service, inorder=True).create_tmp_dir(...)  # noqa: WPS204
+    verify(pcs.file_system_service, inorder=True).copy_file(
+        src_file_path="/test/test.jpg",
+        dst_file_path="/testtmp/test.jpg",
+    )
     verify(pcs.file_system_service, inorder=True).copy_file(
         src_file_path="/test/test.jpg",
         dst_file_path="/testtarget/test_20221001000000.jpg",
     )
 
     verify(pcs.file_system_service, inorder=True).delete_file("/test/test.jpg")
+    verify(pcs.file_system_service, inorder=True).delete_dir("/testtmp")
 
 
+@pytest.mark.django_db
 def test_consume_creates_record_in_database(pcs: PhotoConsumerService, expect, when):
     settings.PHOTOS_REPO_ROOTDIR = "/testtarget"
     when(pcs.file_name_generator_service).create_with_date_postfix(...).thenReturn(
@@ -107,6 +129,7 @@ def test_consume_dir_triggers_consume_for_each_file_in_dir(
     pcs.consume_dir("/test")
 
 
+@pytest.mark.django_db
 def test_consume_dir_should_not_stop_consuming_files_when_one_file_of_many_is_not_consumable(
     pcs: PhotoConsumerService,
     when,
