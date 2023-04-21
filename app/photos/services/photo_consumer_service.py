@@ -2,6 +2,7 @@ import os
 
 from dependency_injector.wiring import Provide, inject
 from django.conf import settings
+from django.db import transaction
 
 from app.common.services.file_name_generator_service_interface import (
     FileNameGeneratorServiceInterface,
@@ -50,6 +51,9 @@ class PhotoConsumerService(ConsumerServiceInterface):
         self.photo_analyzer_service = photo_analyzer_service
 
     def consume(self, src_file_path: str) -> None:
+        self.logging_service.log_info(
+            f"Consumtion started for {src_file_path}",
+        )
         try:
             self._consume(src_file_path)
         except Exception as exc:
@@ -58,6 +62,10 @@ class PhotoConsumerService(ConsumerServiceInterface):
             )
 
     def consume_dir(self, src_dir_path: str, recursive: bool = False) -> None:
+        self.logging_service.log_info(
+            f"Consumtion started for {src_dir_path}",
+        )
+
         files = self.file_system_service.get_files_in_dir(
             src_dir_path,
             recursive,
@@ -70,46 +78,49 @@ class PhotoConsumerService(ConsumerServiceInterface):
         return self.file_name_generator_service.create_with_date_postfix(filename)
 
     def _consume(self, src_file_path: str) -> None:  # noqa: WPS210
-        self.logging_service.log_info(
-            f"Consumtion started for {src_file_path}",
-        )
+        # Construct a few facts
         dst_file_path = self._construct_dst_file_path(src_file_path)
+        tmp_dir_path = self.file_system_service.create_tmp_dir(settings.TMP_ROOTDIR)  # type: ignore[misc]
+        tmp_file_path = f"{tmp_dir_path}/{os.path.basename(src_file_path)}"
 
         # Phase 1: Nothing to roll back if action fails
-        self.logging_service.log_info(
-            f"Copying file from {src_file_path} to {dst_file_path}",
-        )
         self.file_system_service.copy_file(
             src_file_path=src_file_path,
-            dst_file_path=dst_file_path,
+            dst_file_path=tmp_file_path,
         )
 
-        # Phase 2: If something fails, the src file needs to be deleted
-        # After a successful copy action, gather facts from src file
-        hash_md5 = self.photo_analyzer_service.hash_md5(src_file_path)
-        hash_perceptual = self.photo_analyzer_service.hash_perceptual(src_file_path)
-        hash_difference = self.photo_analyzer_service.hash_difference(src_file_path)
-        hash_average = self.photo_analyzer_service.hash_average(src_file_path)
-        hash_wavelet = self.photo_analyzer_service.hash_wavelet(src_file_path)
-        encoding_cnn = self.photo_analyzer_service.encoding_cnn(src_file_path)
+        # Phase 2: If something fails, the tmp file needs to be deleted.
+        # The transaction ensures that a commit is only executed if all other steps succeed.
+        try:  # noqa: WPS229
+            hash_md5 = self.photo_analyzer_service.hash_md5(tmp_file_path)
+            hash_perceptual = self.photo_analyzer_service.hash_perceptual(tmp_file_path)
+            hash_difference = self.photo_analyzer_service.hash_difference(tmp_file_path)
+            hash_average = self.photo_analyzer_service.hash_average(tmp_file_path)
+            hash_wavelet = self.photo_analyzer_service.hash_wavelet(tmp_file_path)
+            encoding_cnn = self.photo_analyzer_service.encoding_cnn(tmp_file_path)
+            with transaction.atomic():
+                self.photo_model_service.photo_create(
+                    dest_file_path=dst_file_path,
+                    hash_md5=hash_md5,
+                    hash_perceptual=hash_perceptual,
+                    hash_difference=hash_difference,
+                    hash_average=hash_average,
+                    hash_wavelet=hash_wavelet,
+                    encoding_cnn=encoding_cnn,
+                )
+                self.file_system_service.copy_file(
+                    src_file_path=src_file_path,
+                    dst_file_path=dst_file_path,
+                )
 
-        self.logging_service.log_info(
-            "Creating db entry for photo",
-        )
-        self.photo_model_service.photo_create(
-            dest_file_path=dst_file_path,
-            hash_md5=hash_md5,
-            hash_perceptual=hash_perceptual,
-            hash_difference=hash_difference,
-            hash_average=hash_average,
-            hash_wavelet=hash_wavelet,
-            encoding_cnn=encoding_cnn,
-        )
-
-        self.logging_service.log_info(
-            f"Deleting file {src_file_path}",
-        )
-        self.file_system_service.delete_file(src_file_path)
+                # The very last step: Delete the source...
+                self.file_system_service.delete_file(src_file_path)
+        except Exception as exc:
+            self.logging_service.log_error(
+                f"Consumtion failed with error {str(exc)}",
+            )
+        finally:
+            self.file_system_service.delete_dir(tmp_dir_path)
 
     def _construct_dst_file_path(self, src_file_path: str) -> str:
         dst_file_name = self._generate_unique_filename(os.path.basename(src_file_path))

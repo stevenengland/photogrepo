@@ -27,7 +27,10 @@ class Command(BaseCommand):
         self.photo_consumer_service = photo_consumer_service
         super().__init__()
 
-    def handle(self, *args, **kwargs):  # noqa: WPS110
+    def add_arguments(self, parser):
+        parser.add_argument("--runonce", action="store_true", help="Run only once.")
+
+    def handle(self, *args, **options) -> None:  # noqa: WPS110
         self.logging_service.log_info("Starting consumption.")
         try:
             self.photo_consumer_service.consume_dir(
@@ -39,3 +42,6 @@ class Command(BaseCommand):
                 f"Consume failed for one or more images: {str(exc)}",
             )
             raise exc
+
+        if options["runonce"]:
+            return

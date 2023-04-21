@@ -1,4 +1,5 @@
 import abc
+from typing import Optional
 
 
 class FileSystemServiceInterface(abc.ABC):
@@ -12,4 +13,12 @@ class FileSystemServiceInterface(abc.ABC):
 
     @abc.abstractmethod
     def get_files_in_dir(self, dir_path: str, recursive: bool = False) -> list[str]:
+        pass
+
+    @abc.abstractmethod
+    def create_tmp_dir(self, dest_dir: Optional[str] = None) -> str:
+        pass
+
+    @abc.abstractmethod
+    def delete_dir(self, dir_path) -> None:
         pass

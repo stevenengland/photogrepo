@@ -31,6 +31,7 @@ def call_test_command(*args, **kwargs) -> tuple[str, str]:
     return (out.getvalue(), err.getvalue())
 
 
+@pytest.mark.timeout(10)
 @pytest.mark.django_db
 def test_consume_photos_should_consume_2_photos_when_2_photos_are_in_consume_dir(  # noqa: WPS218
     cffs: FakeFileSystemHelper,
@@ -42,7 +43,7 @@ def test_consume_photos_should_consume_2_photos_when_2_photos_are_in_consume_dir
         ),
     )
 
-    out, err = call_test_command()
+    out, err = call_test_command("--runonce")
 
     # Test db entries
     photos = Photo.objects.all()
@@ -63,3 +64,16 @@ def test_consume_photos_should_consume_2_photos_when_2_photos_are_in_consume_dir
     for file_it_consume in files_it_consume:
         files_consume.append(file_it_consume.path)
     assert not files_consume
+
+
+def test_consume_photos_should_return_after_first_run_when_runonce_is_true(
+    cffs: FakeFileSystemHelper,
+):
+    settings.PHOTOS_CONSUME_ROOTDIR = str(
+        cffs.test_assets_path.joinpath(
+            "consume_photos",
+            "multiple_photos",
+        ),
+    )
+
+    out, err = call_test_command("--runonce")

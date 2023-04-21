@@ -32,3 +32,9 @@ PHOTOS_REPO_ROOTDIR: str = config(
 )
 
 PHOTOS_TEST: int = config("PHOTOGREPO_PHOTOS_TEST", default=10, cast=int)
+
+# When dir is None then a os dependent temp directory will be used.
+TMP_ROOTDIR: str = config(
+    "PHOTOGREPO_TMP_ROOTDIR",
+    default=None,
+)
